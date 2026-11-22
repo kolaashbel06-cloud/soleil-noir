@@ -15,12 +15,17 @@ jobs:
 
       - name: Preparer les templates d'export
         run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          for d in /root/.local/share/godot/templates/*; do
-            if [ ! -d ~/.local/share/godot/templates/$(basename "$d") ]; then
-              mv "$d" ~/.local/share/godot/templates/
+          mkdir -p ~/.local/share/godot/templates
+          echo "HOME = $HOME"
+          godot --version || true
+          for v in $(find / -type f -name version.txt -path "*templates*" -not -path "/proc/*" 2>/dev/null); do
+            d=$(dirname "$v")
+            echo "Templates trouves : $d"
+            if [ ! -d "$HOME/.local/share/godot/templates/$(basename "$d")" ]; then
+              cp -r "$d" ~/.local/share/godot/templates/
             fi
           done
+          echo "--- Contenu final ---"
           ls -la ~/.local/share/godot/templates
 
       - name: Creer la cle de signature debug et les reglages Godot
