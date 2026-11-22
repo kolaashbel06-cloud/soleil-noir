@@ -1,29 +1,38 @@
 extends Spatial
-# Prototype v0.1 : petit monde low-poly, joueur déplaçable, caméra qui suit.
+# Prototype v0.2 : humains low-poly, combat (coup + esquive), ennemis, barre de vie.
 
 const CAM_OFFSET := Vector3(0, 14, 11)
+const MAX_ENEMIES := 5
 
 var player
 var camera
 var joystick
+var hud
+var kills := 0
+var _spawn_timer := 5.0
 
 
 func _ready():
+	randomize()
 	_setup_inputs()
 	_build_environment()
 	_build_world()
 	_build_player()
 	_build_camera()
 	_build_ui()
+	for i in range(MAX_ENEMIES):
+		_spawn_enemy(_road_spawn_pos())
 
 
 func _setup_inputs():
-	# Clavier pour tester sur PC (ZQSD pour AZERTY, WASD, flèches)
+	# Clavier pour tester sur PC (ZQSD pour AZERTY, WASD, flèches, Espace = coup, Maj = esquive)
 	var map = {
 		"move_up": [KEY_W, KEY_Z, KEY_UP],
 		"move_down": [KEY_S, KEY_DOWN],
 		"move_left": [KEY_A, KEY_Q, KEY_LEFT],
 		"move_right": [KEY_D, KEY_RIGHT],
+		"attack": [KEY_SPACE, KEY_J],
+		"dodge": [KEY_SHIFT, KEY_K],
 	}
 	for action in map.keys():
 		if not InputMap.has_action(action):
@@ -100,16 +109,6 @@ func _build_world():
 func _build_player():
 	player = KinematicBody.new()
 	player.set_script(load("res://Player.gd"))
-	var cs := CollisionShape.new()
-	var shape := BoxShape.new()
-	shape.extents = Vector3(0.4, 0.9, 0.4)
-	cs.shape = shape
-	player.add_child(cs)
-	player.add_child(_mesh_box(Vector3(0.8, 1.8, 0.8), Color(0.9, 0.3, 0.2)))
-	# "Nez" pour voir où regarde le personnage (avant = -Z)
-	var nose := _mesh_box(Vector3(0.3, 0.3, 0.5), Color(1, 1, 1))
-	nose.translation = Vector3(0, 0.4, -0.5)
-	player.add_child(nose)
 	player.translation = Vector3(0, 1.0, 0)
 	add_child(player)
 
@@ -132,10 +131,53 @@ func _build_ui():
 	joystick.set_anchors_and_margins_preset(Control.PRESET_WIDE)
 	player.joystick = joystick
 
+	hud = Control.new()
+	hud.set_script(load("res://Hud.gd"))
+	hud.player = player
+	hud.camera = camera
+	hud.main = self
+	layer.add_child(hud)
+	hud.set_anchors_and_margins_preset(Control.PRESET_WIDE)
+	hud.connect("attack_pressed", player, "attack")
+	hud.connect("dodge_pressed", player, "dodge")
+
 	var label := Label.new()
-	label.text = "Prototype v0.1 - ZQSD / fleches ou joystick tactile (moitie gauche de l'ecran)"
+	label.text = "Prototype v0.2 - ZQSD/fleches, Espace = coup, Maj = esquive, ou ecran tactile"
 	label.rect_position = Vector2(16, 12)
 	layer.add_child(label)
+
+
+# --- Ennemis ---------------------------------------------------------------
+
+func _road_spawn_pos() -> Vector3:
+	var sgn = 1.0
+	if randf() < 0.5:
+		sgn = -1.0
+	var far = randf_range(18.0, 60.0) * sgn
+	var side = randf_range(-3.0, 3.0)
+	if randf() < 0.5:
+		return Vector3(far, 1.0, side)
+	return Vector3(side, 1.0, far)
+
+
+func _spawn_enemy(pos: Vector3):
+	var e := KinematicBody.new()
+	e.set_script(load("res://Enemy.gd"))
+	e.translation = pos
+	e.main_ref = self
+	add_child(e)
+
+
+func _alive_enemies() -> int:
+	var n := 0
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if not e.dead:
+			n += 1
+	return n
+
+
+func on_enemy_died():
+	kills += 1
 
 
 func _process(delta):
@@ -144,3 +186,12 @@ func _process(delta):
 	var target = player.translation + CAM_OFFSET
 	camera.translation = camera.translation.linear_interpolate(target, min(1.0, delta * 5.0))
 	camera.look_at(player.translation, Vector3.UP)
+
+	# De nouveaux ennemis arrivent régulièrement par les routes
+	_spawn_timer -= delta
+	if _spawn_timer <= 0.0:
+		_spawn_timer = 5.0
+		if _alive_enemies() < MAX_ENEMIES:
+			var pos = _road_spawn_pos()
+			if pos.distance_to(player.translation) > 20.0:
+				_spawn_enemy(pos)

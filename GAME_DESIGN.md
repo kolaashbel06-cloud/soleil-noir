@@ -1,7 +1,7 @@
 # GAME_DESIGN.md — Projet « Soleil Noir » (titre provisoire)
 
 > Document vivant. À coller au début de chaque nouvelle session avec Claude.
-> Dernière mise à jour : 22/11/2026
+> Dernière mise à jour : 22/11/2026 (v0.2)
 
 ## 1. Vision
 
@@ -35,6 +35,9 @@ pas de noms, lieux, personnages, logos ou musiques d'œuvres existantes. Tout no
 - Transitions toujours fluides (interpolation), jamais de coupure brutale en jeu.
 
 ## 5. Création du personnage
+
+Tous les personnages du jeu (joueur, Proche, ennemis, PNJ) sont des **humains** en 3D low-poly
+(tête, torse, bras, jambes, animations de marche et de coup). Pas de cubes ni de créatures.
 
 À l'inscription / nouvelle partie :
 - **Pseudo** (unique en ligne), nom du personnage, apparence (low-poly : corps, coiffure, vêtements, couleurs).
@@ -98,10 +101,10 @@ Combat final, **très difficile** :
 
 | Sujet | Choix |
 |---|---|
-| Moteur | **Godot 3.5.x** (GLES2), langage GDScript |
+| Moteur | **Godot 3.6.2** (GLES2), langage GDScript |
 | Pourquoi | Tourne sur Windows 7, léger, bon pour la 3D low-poly |
 | Style visuel | 3D low-poly, couleurs franches, peu de textures |
-| Build | **GitHub Actions** → APK debug téléchargeable |
+| Build | **GitHub Actions** (image `barichello/godot-ci:3.6.2`) → APK debug téléchargeable |
 | Cible | Android, orientation paysage |
 | Mémoire du projet | Ce dépôt (`GAME_DESIGN.md`, `ROADMAP.md`) |
 
