@@ -33,24 +33,34 @@ jobs:
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android \
             -keystore debug.keystore -storepass android \
             -dname "CN=Android Debug,O=Android,C=US" -validity 9999 -deststoretype pkcs12
+          JAVA_BIN=$(readlink -f "$(which keytool)")
+          JAVA_DIR=$(dirname "$(dirname "$JAVA_BIN")")
+          echo "Java trouve dans : $JAVA_DIR"
+          ls "$JAVA_DIR/bin" | head -20
           mkdir -v -p ~/.config/godot
           printf '%s\n' \
             '[gd_resource type="EditorSettings" format=2]' \
             '' \
             '[resource]' \
             'export/android/android_sdk_path = "/usr/lib/android-sdk"' \
+            "export/android/java_sdk_path = \"$JAVA_DIR\"" \
+            "export/android/jarsigner = \"$JAVA_DIR/bin/jarsigner\"" \
             "export/android/debug_keystore = \"$(pwd)/debug.keystore\"" \
             'export/android/debug_keystore_user = "androiddebugkey"' \
             'export/android/debug_keystore_pass = "android"' \
             > ~/.config/godot/editor_settings-3.tres
+          cat ~/.config/godot/editor_settings-3.tres
 
       - name: Exporter l'APK
         run: |
           mkdir -v -p build
-          godot -v --export-debug "Android" build/soleil-noir-debug.apk
+          godot -v --export-debug "Android" build/soleil-noir-debug.apk 2>&1 | grep -v "NULL RID" | grep -v "visual_server_raster" || true
+          ls -la build
+          test -f build/soleil-noir-debug.apk
 
       - name: Publier l'APK
         uses: actions/upload-artifact@v4
         with:
           name: soleil-noir-apk
           path: build/*.apk
+        
