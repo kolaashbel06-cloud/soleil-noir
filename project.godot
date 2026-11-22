@@ -1,0 +1,23 @@
+; Engine configuration file for Godot 3.5
+config_version=4
+
+[application]
+
+config/name="Soleil Noir"
+run/main_scene="res://Main.tscn"
+
+[display]
+
+window/size/width=1280
+window/size/height=720
+window/handheld/orientation="landscape"
+window/stretch/mode="2d"
+window/stretch/aspect="expand"
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
