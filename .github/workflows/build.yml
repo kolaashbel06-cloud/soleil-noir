@@ -9,16 +9,19 @@ jobs:
   android:
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:3.5.3
+      image: barichello/godot-ci:3.6.2
     steps:
       - uses: actions/checkout@v4
 
       - name: Preparer les templates d'export
         run: |
           mkdir -v -p ~/.local/share/godot/templates
-          if [ ! -d ~/.local/share/godot/templates/3.5.3.stable ]; then
-            mv /root/.local/share/godot/templates/3.5.3.stable ~/.local/share/godot/templates/3.5.3.stable
-          fi
+          for d in /root/.local/share/godot/templates/*; do
+            if [ ! -d ~/.local/share/godot/templates/$(basename "$d") ]; then
+              mv "$d" ~/.local/share/godot/templates/
+            fi
+          done
+          ls -la ~/.local/share/godot/templates
 
       - name: Creer la cle de signature debug et les reglages Godot
         run: |
