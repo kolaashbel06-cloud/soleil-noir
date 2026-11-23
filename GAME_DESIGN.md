@@ -1,7 +1,7 @@
-# GAME_DESIGN.md — Projet « Soleil Noir » (titre provisoire)
+# GAME_DESIGN.md — DRAEVEN
 
 > Document vivant. À coller au début de chaque nouvelle session avec Claude.
-> Dernière mise à jour : 22/11/2026 (v0.2)
+> Dernière mise à jour : 23/11/2026 (v0.2.1)
 
 ## 1. Vision
 
@@ -113,7 +113,8 @@ ou assets libres (licences CC0 à vérifier une par une).
 
 ## 12. Questions ouvertes
 
-- Nom de l'État, des villes, des factions, titre définitif du jeu.
+- Nom de l'État, des villes et des factions (le titre du jeu est **DRAEVEN**).
+- Logo, icône de l'application et écran-titre.
 - Taille du premier quartier jouable.
 - Doublage / texte seulement (je recommande texte seulement au début).
 - Monétisation : aucune pour l'instant (jeu personnel).

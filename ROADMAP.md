@@ -1,4 +1,4 @@
-# ROADMAP.md — Projet « Soleil Noir »
+# ROADMAP.md — DRAEVEN
 
 ## Comment reprendre une session avec Claude
 1. Ouvre une nouvelle conversation.
@@ -10,6 +10,8 @@
 ## Phase 0 — Fondations
 - [x] Idée, genre, univers, ton, boss final définis
 - [x] Choix du moteur (Godot 3.6.2, 3D low-poly)
+- [x] Nom du jeu choisi : DRAEVEN
+- [ ] Logo et icône de l'application (remplacer l'icône Godot par défaut)
 - [x] Dépôt GitHub créé
 - [x] Prototype envoyé et compilé en APK par GitHub Actions
 - [x] APK installé et testé sur le téléphone (déplacement + caméra OK, fluide)
@@ -77,7 +79,17 @@
 - `project.godot` doit contenir `vram_compression/import_etc=true` (sinon l'export Android échoue).
 - Les personnages sont des **humains** low-poly (script `Humanoid.gd`), pas des cubes.
 - Les boutons tactiles gèrent plusieurs doigts (un pour bouger, un pour attaquer).
+- En Godot 3 on écrit `rand_range` (`randf_range` n'existe qu'en Godot 4) : attention aux tutoriels Godot 4.
+- La clé de signature change à chaque compilation : désinstaller l'ancienne version avant d'installer un nouvel APK.
+- Journal de démarrage `user://boot.log` : si le jeu se fige, au lancement suivant l'écran affiche la dernière étape atteinte (texte jaune).
+
+- Chaque compilation crée une nouvelle clé de signature : **désinstalle l'ancienne version avant d'installer la nouvelle** (sinon Android refuse).
+- La compilation contrôle maintenant chaque script (`--check-only`) et lance un test de 6 s (`smoke_test.gd`) : si un script est cassé, aucun APK n'est fabriqué.
+- Godot 3 n'a pas `randf_range()` en global (c'est `rand_range()`) : attention aux fonctions de Godot 4.
+- Le jeu écrit un petit journal de démarrage (`user://boot.log`) ; au lancement suivant, il affiche en jaune la dernière étape atteinte si le précédent s'est figé.
 
 ## Journal
 - 22/11/2026 : conception initiale, prototype v0.1 (déplacement 3D) compilé et testé sur téléphone après réglage du workflow.
-- 22/11/2026 : v0.2 écrite (humains low-poly, coup, esquive, ennemis, barre de vie). Non encore testée.
+- 22/11/2026 : v0.2 écrite (humains low-poly, coup, esquive, ennemis, barre de vie).
+- 23/11/2026 : test de la v0.2 : écran noir puis téléphone bloqué. Une erreur trouvée (`randf_range`), qui n'explique pas à elle seule le blocage. v0.2.1 : correctif + journal de démarrage pour localiser la cause. Nom du jeu choisi : DRAEVEN.
+- 23/11/2026 : nom d'application et identifiant Android passés à DRAEVEN (`com.draeven.game`), version 0.2.1, contrôle automatique des scripts ajouté à la compilation.

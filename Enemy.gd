@@ -36,7 +36,7 @@ func _ready():
 
 	human = Spatial.new()
 	human.set_script(load("res://Humanoid.gd"))
-	human.shirt_color = Color.from_hsv(randf_range(0.7, 0.95), 0.55, 0.45)
+	human.shirt_color = Color.from_hsv(rand_range(0.7, 0.95), 0.55, 0.45)
 	human.pants_color = Color(0.15, 0.15, 0.18)
 	human.hair_color = Color(0.05, 0.05, 0.05)
 	human.translation = Vector3(0.0, -0.9, 0.0)

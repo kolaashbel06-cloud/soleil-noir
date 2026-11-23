@@ -52,12 +52,16 @@ func _process(_delta):
 
 
 func _text(text, pos: Vector2, sc = 1.0, color = Color(1, 1, 1, 1)):
+	if _font == null:
+		return
 	draw_set_transform(pos, 0.0, Vector2(sc, sc))
 	draw_string(_font, Vector2.ZERO, text, color)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _text_centered(text, center: Vector2, sc = 1.0, color = Color(1, 1, 1, 1)):
+	if _font == null:
+		return
 	var w = _font.get_string_size(text).x * sc
 	_text(text, center + Vector2(-w / 2.0, 5.0 * sc), sc, color)
 

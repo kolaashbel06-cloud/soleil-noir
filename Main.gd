@@ -10,18 +10,75 @@ var joystick
 var hud
 var kills := 0
 var _spawn_timer := 5.0
+var _t := 0.0
+var _beat := 0
+const LOG_PATH := "user://boot.log"
 
 
 func _ready():
 	randomize()
+	var previous := _read_log()
+	_log_start()
 	_setup_inputs()
+	_log("inputs")
 	_build_environment()
+	_log("environnement")
 	_build_world()
+	_log("monde")
 	_build_player()
+	_log("joueur")
 	_build_camera()
+	_log("camera")
 	_build_ui()
+	_log("interface")
+	_show_previous_log(previous)
 	for i in range(MAX_ENEMIES):
 		_spawn_enemy(_road_spawn_pos())
+	_log("ennemis")
+	_log("demarrage termine")
+
+
+# --- Journal de demarrage -----------------------------------------------------
+# Ecrit chaque etape dans un petit fichier. Si le jeu se fige, au prochain lancement
+# l'ecran affiche la derniere etape atteinte, ce qui permet de localiser le probleme.
+
+func _read_log() -> String:
+	var f := File.new()
+	if not f.file_exists(LOG_PATH):
+		return ""
+	if f.open(LOG_PATH, File.READ) != OK:
+		return ""
+	var text := f.get_as_text()
+	f.close()
+	return text
+
+
+func _log_start():
+	var f := File.new()
+	if f.open(LOG_PATH, File.WRITE) == OK:
+		f.store_line("== nouveau lancement ==")
+		f.close()
+
+
+func _log(msg: String):
+	var f := File.new()
+	if f.open(LOG_PATH, File.READ_WRITE) == OK:
+		f.seek_end()
+		f.store_line(msg)
+		f.close()
+
+
+func _show_previous_log(previous: String):
+	# Si le lancement precedent ne s'est pas termine proprement, on montre ou il s'est arrete.
+	if previous == "" or previous.find("tout va bien") != -1:
+		return
+	var lines = previous.strip_edges().split("\n")
+	var last = lines[lines.size() - 1]
+	var label := Label.new()
+	label.text = "Dernier lancement interrompu apres : " + last
+	label.rect_position = Vector2(16, 120)
+	label.modulate = Color(1.0, 0.9, 0.3)
+	hud.get_parent().add_child(label)
 
 
 func _setup_inputs():
@@ -142,7 +199,7 @@ func _build_ui():
 	hud.connect("dodge_pressed", player, "dodge")
 
 	var label := Label.new()
-	label.text = "Prototype v0.2 - ZQSD/fleches, Espace = coup, Maj = esquive, ou ecran tactile"
+	label.text = "Prototype v0.2.1 - ZQSD/fleches, Espace = coup, Maj = esquive, ou ecran tactile"
 	label.rect_position = Vector2(16, 12)
 	layer.add_child(label)
 
@@ -153,8 +210,8 @@ func _road_spawn_pos() -> Vector3:
 	var sgn = 1.0
 	if randf() < 0.5:
 		sgn = -1.0
-	var far = randf_range(18.0, 60.0) * sgn
-	var side = randf_range(-3.0, 3.0)
+	var far = rand_range(18.0, 60.0) * sgn
+	var side = rand_range(-3.0, 3.0)
 	if randf() < 0.5:
 		return Vector3(far, 1.0, side)
 	return Vector3(side, 1.0, far)
@@ -183,6 +240,17 @@ func on_enemy_died():
 func _process(delta):
 	if player == null or camera == null:
 		return
+	_t += delta
+	if _beat == 0:
+		_beat = 1
+		_log("premiere image")
+	elif _beat == 1 and _t > 2.0:
+		_beat = 2
+		_log("2 secondes")
+	elif _beat == 2 and _t > 5.0:
+		_beat = 3
+		_log("tout va bien")
+
 	var target = player.translation + CAM_OFFSET
 	camera.translation = camera.translation.linear_interpolate(target, min(1.0, delta * 5.0))
 	camera.look_at(player.translation, Vector3.UP)
