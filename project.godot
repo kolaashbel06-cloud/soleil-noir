@@ -4,7 +4,8 @@ config_version=4
 [application]
 
 config/name="DRAEVEN"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://Title.tscn"
+config/quit_on_go_back=false
 config/icon="res://icon.png"
 
 [display]

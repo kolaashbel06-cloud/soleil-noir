@@ -199,7 +199,7 @@ func _build_ui():
 	hud.connect("dodge_pressed", player, "dodge")
 
 	var label := Label.new()
-	label.text = "Prototype v0.2.1 - ZQSD/fleches, Espace = coup, Maj = esquive, ou ecran tactile"
+	label.text = "Prototype v0.3 - ZQSD/fleches, Espace = coup, Maj = esquive, ou ecran tactile"
 	label.rect_position = Vector2(16, 12)
 	layer.add_child(label)
 
@@ -263,3 +263,10 @@ func _process(delta):
 			var pos = _road_spawn_pos()
 			if pos.distance_to(player.translation) > 20.0:
 				_spawn_enemy(pos)
+
+
+func _notification(what):
+	# Bouton "retour" d'Android : on revient a l'ecran-titre
+	if what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
+		_log("retour au titre (tout va bien)")
+		get_tree().change_scene("res://Title.tscn")

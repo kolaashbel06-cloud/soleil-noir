@@ -9,6 +9,10 @@ var _main = null
 
 
 func _initialize():
+	var title = load("res://Title.tscn").instance()
+	root.add_child(title)
+	title.queue_free()
+	print("TEST : ecran-titre charge")
 	_main = load("res://Main.tscn").instance()
 	root.add_child(_main)
 	print("TEST : jeu charge")

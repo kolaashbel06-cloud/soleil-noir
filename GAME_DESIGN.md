@@ -119,3 +119,11 @@ ou assets libres (licences CC0 à vérifier une par une).
 - Doublage / texte seulement (je recommande texte seulement au début).
 - Monétisation : aucune pour l'instant (jeu personnel).
 - Âge/contenu : définir une limite de contenu claire pour le ton (violence, langage).
+
+## 13. Identité visuelle
+
+- **Symbole** : une dague verticale coupée en deux (moitié or, moitié noire, contour rouge sombre), allusion à la trahison.
+- **Nom** : DRAEVEN en lettres larges (police Inter Black), le A remplacé par un Λ sans barre ; trait rouge en biseau dessous.
+- **Palette** : fond gris très sombre `#161616` ; or dégradé `#FFD048` vers `#DE7618` ; rouge sombre `#AA1C1C` ; lueur orange `#D7521A`.
+- **Écran-titre** : lame à gauche sur une lueur orange qui pulse doucement, nom et bouton JOUER à droite.
+- Le logo est une image générée par l'utilisateur ; l'icône et l'écran-titre en sont dérivés.

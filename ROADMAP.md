@@ -11,7 +11,8 @@
 - [x] Idée, genre, univers, ton, boss final définis
 - [x] Choix du moteur (Godot 3.6.2, 3D low-poly)
 - [x] Nom du jeu choisi : DRAEVEN
-- [ ] Logo et icône de l'application (remplacer l'icône Godot par défaut)
+- [x] Logo et icône de l'application (lame bicolore or et noir, icône Android en place)
+- [ ] Écran-titre : lame, nom DRAEVEN, bouton Jouer (v0.3 écrite, à valider)
 - [x] Dépôt GitHub créé
 - [x] Prototype envoyé et compilé en APK par GitHub Actions
 - [x] APK installé et testé sur le téléphone (déplacement + caméra OK, fluide)
@@ -19,10 +20,10 @@
 
 ## Phase 1 — Prototype jouable
 - [x] Déplacement + caméra suivant le joueur
-- [ ] Personnage humain low-poly animé (v0.2 écrite, à valider sur téléphone)
-- [ ] Boutons tactiles : coup, esquive (v0.2 écrite, à valider)
-- [ ] Un ennemi simple avec IA de poursuite et attaque (v0.2 écrite, à valider)
-- [ ] Barre de vie, KO et réapparition (v0.2 écrite, à valider)
+- [x] Personnage humain low-poly animé (validé sur téléphone)
+- [x] Boutons tactiles : coup, esquive (validé sur téléphone)
+- [x] Un ennemi simple avec IA de poursuite et attaque (validé : 5 ennemis vaincus au premier test)
+- [ ] Barre de vie validée ; KO et réapparition encore à valider
 - [ ] Première petite carte avec collisions soignées (bâtiments, trottoirs)
 
 ## Phase 2 — Premier quartier
@@ -82,14 +83,14 @@
 - En Godot 3 on écrit `rand_range` (`randf_range` n'existe qu'en Godot 4) : attention aux tutoriels Godot 4.
 - La clé de signature change à chaque compilation : désinstaller l'ancienne version avant d'installer un nouvel APK.
 - Journal de démarrage `user://boot.log` : si le jeu se fige, au lancement suivant l'écran affiche la dernière étape atteinte (texte jaune).
-
-- Chaque compilation crée une nouvelle clé de signature : **désinstalle l'ancienne version avant d'installer la nouvelle** (sinon Android refuse).
 - La compilation contrôle maintenant chaque script (`--check-only`) et lance un test de 6 s (`smoke_test.gd`) : si un script est cassé, aucun APK n'est fabriqué.
-- Godot 3 n'a pas `randf_range()` en global (c'est `rand_range()`) : attention aux fonctions de Godot 4.
-- Le jeu écrit un petit journal de démarrage (`user://boot.log`) ; au lancement suivant, il affiche en jaune la dernière étape atteinte si le précédent s'est figé.
+- Écran-titre : images pré-dessinées (`title_*.png`, `btn_play*.png`) ; le bouton Retour d'Android revient au titre depuis le jeu (`config/quit_on_go_back=false`).
+- Icône : `icon.png`, `icon_192.png`, `icon_fg.png` (avant, transparent) et `icon_bg.png` (fond uni) ; le détourage de la lame vient de l'image générée par l'utilisateur.
 
 ## Journal
 - 22/11/2026 : conception initiale, prototype v0.1 (déplacement 3D) compilé et testé sur téléphone après réglage du workflow.
 - 22/11/2026 : v0.2 écrite (humains low-poly, coup, esquive, ennemis, barre de vie).
 - 23/11/2026 : test de la v0.2 : écran noir puis téléphone bloqué. Une erreur trouvée (`randf_range`), qui n'explique pas à elle seule le blocage. v0.2.1 : correctif + journal de démarrage pour localiser la cause. Nom du jeu choisi : DRAEVEN.
 - 23/11/2026 : nom d'application et identifiant Android passés à DRAEVEN (`com.draeven.game`), version 0.2.1, contrôle automatique des scripts ajouté à la compilation.
+- 23/11/2026 : v0.2.1 validée sur téléphone (le jeu tourne, combat OK, 5 ennemis vaincus). Icône DRAEVEN (lame) installée sur le téléphone.
+- 23/11/2026 : v0.3 écrite : écran-titre (lame, nom, bouton Jouer) et retour au titre avec le bouton Retour. Non encore testée.
