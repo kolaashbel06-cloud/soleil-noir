@@ -28,6 +28,26 @@ jobs:
           echo "--- Contenu final ---"
           ls -la ~/.local/share/godot/templates
 
+      - name: Verifier les scripts du jeu
+        run: |
+          fail=0
+          for f in *.gd; do
+            out=$(godot --path . --check-only -s "res://$f" 2>&1 | grep -v "NULL RID" | grep -v "visual_server_raster" || true)
+            if echo "$out" | grep -qiE "parse error|parser error|isn't declared"; then
+              echo "=== ERREUR dans $f ==="
+              echo "$out" | grep -iE -B1 -A2 "parse error|parser error|isn't declared" || true
+              fail=1
+            else
+              echo "OK : $f"
+            fi
+          done
+          echo "--- Test de lancement du jeu (6 s) ---"
+          timeout 120 godot --path . -s res://smoke_test.gd 2>&1 | grep -v "NULL RID" | grep -v "visual_server_raster" | tail -40 || true
+          if [ "$fail" = "1" ]; then
+            echo "Un script contient une erreur : l'APK n'est pas fabrique."
+            exit 1
+          fi
+
       - name: Creer la cle de signature debug et les reglages Godot
         run: |
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android \
@@ -36,7 +56,6 @@ jobs:
           JAVA_BIN=$(readlink -f "$(which keytool)")
           JAVA_DIR=$(dirname "$(dirname "$JAVA_BIN")")
           echo "Java trouve dans : $JAVA_DIR"
-          ls "$JAVA_DIR/bin" | head -20
           mkdir -v -p ~/.config/godot
           printf '%s\n' \
             '[gd_resource type="EditorSettings" format=2]' \
@@ -49,18 +68,16 @@ jobs:
             'export/android/debug_keystore_user = "androiddebugkey"' \
             'export/android/debug_keystore_pass = "android"' \
             > ~/.config/godot/editor_settings-3.tres
-          cat ~/.config/godot/editor_settings-3.tres
 
       - name: Exporter l'APK
         run: |
           mkdir -v -p build
-          godot -v --export-debug "Android" build/soleil-noir-debug.apk 2>&1 | grep -v "NULL RID" | grep -v "visual_server_raster" || true
+          godot -v --export-debug "Android" build/draeven-debug.apk 2>&1 | grep -v "NULL RID" | grep -v "visual_server_raster" || true
           ls -la build
-          test -f build/soleil-noir-debug.apk
+          test -f build/draeven-debug.apk
 
       - name: Publier l'APK
         uses: actions/upload-artifact@v4
         with:
-          name: soleil-noir-apk
+          name: draeven-apk
           path: build/*.apk
-        
